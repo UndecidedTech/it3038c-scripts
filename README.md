@@ -1,6 +1,6 @@
-My App
+Class Work
 ======
 
-```javascript
-Javascript code to highlight whats up in my code
+```
+This is the work to track the assignments I'm working on in IT3038C
 ```
