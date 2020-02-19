@@ -1,5 +1,6 @@
-const os = require("os")
+const os = require("os");
 const express = require("express");
+const ip = require("ip");
 const app = express();
 const port = 3000;
 
@@ -29,20 +30,30 @@ function returnServerInfo() {
         "Seconds": uptimeSeconds
     }
 
-    return {
+    data = {
         "Hostname": os.hostname(),
-        "Ip Address": os.networkInterfaces().en0[1].address,
-        "Number of Cpus": os.cpus().length,
-        "uptime": uptimeReturn,
-        "Total Memory": `${os.totalmem() / 1000000} mbs`,
-        "Free Mem": `${os.freemem() / 1000000} mbs`
+        "IpAddress": ip.address(),
+        "Cpus": os.cpus().length,
+        "Uptime": uptimeReturn,
+        "TotalMem": `${os.totalmem() / 1000000} mbs`,
+        "FreeMem": `${os.freemem() / 1000000} mbs`
     }
+
+    return `
+        <html>
+        <p>Hostname: ${data.hostname}</p>
+        <p>Ip Address: ${data.IpAddress}</p>
+        <p>Number of Cpus: ${data.Cpus}</p>
+        <p>Uptime: ${JSON.stringify(data.Uptime)}</p>
+        <p>Total memory: ${data.TotalMem}</p>
+        <p>Free memory: ${data.FreeMem}</p>
+        </html>
+    `
 }
 
 app.listen(port, () => console.log(`server started on ${port}`));
 
 app.get("/", (req, res) => {
-    res.send(returnServerInfo())
-    
+    res.send(returnServerInfo());
 })
 
