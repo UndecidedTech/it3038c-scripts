@@ -1,0 +1,14 @@
+hr { 
+    display: block;
+    overflow: hidden;
+    border-style: inset;
+    border-width: .05px;
+    height: 3px;
+    width: 100%;
+    background-color: #17a2b8;
+    opacity: 0.5;
+}
+
+.container {
+    background-color: gainsboro;
+}
