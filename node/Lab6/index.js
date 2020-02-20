@@ -63,8 +63,8 @@ function returnServerInfo() {
             <hr/>
             <div class="row pl-4 pt-3 pb-3">
                 <div class="col">Free memory: ${data.FreeMem}</div>
+                <button class="btn btn-info mr-5" onclick="location.reload()">Refresh Data</button>
             </div>
-            <button class="btn btn-info" onclick="location.reload()">Refresh Data</button>
         </div>
         </html>
     `
