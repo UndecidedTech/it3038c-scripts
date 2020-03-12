@@ -15,8 +15,10 @@
           </div>
           <div class="row justify-content-center">
             <div class="col-4"/>
-            <input class="col-2" @change="onFileSelected" type="file" id="uploadImage"/>
-            <button class="col-2" @click="onUpload">Submit</button>
+            <form enctype="multipart/form-data">
+              <input class="col-2" @change="onFileSelected" type="file" id="uploadImage"/>
+              <button class="col-2" type="submit" @click="onUpload">Submit</button>
+            </form>
             <div class="col-4"/>
           </div>
       </div>
@@ -44,6 +46,10 @@ export default {
       async onUpload() {
         const fd = new FormData();
         fd.append("image", this.image, this.image.name);
+        fd.append("title", this.title);
+        fd.append("content", this.content);
+
+        console.log(fd);
         await axios.post("http://localhost:3000/api/upload", fd)
           .then(res => {
             console.log(res)
@@ -52,11 +58,15 @@ export default {
        disableButton(){
          console.log("disabled");
          document.getElementById("newThread").disabled = true;
+       },
+       async getThread() {
+         await axios.get("http://localhost:3000/api/thread").then(res => {
+           console.log(res);
+         })
        }
   },
   mounted(){
-    if (this.open === false)
-      this.disableButton()
+    this.getThread();
   }
 }
 
