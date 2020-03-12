@@ -16,6 +16,8 @@ app.use(cors({
 
 app.use(bodyParser.json());
 
+app.use("/image", express.static("image"));
+
 const fileFilter = (req, file, cb) => {
     if (file.mimetype === "image/jpeg" || file.mimetype === "image/png"){
         cb(null, true)
@@ -43,7 +45,7 @@ var thread = JSON.parse(post);
 
 console.log(thread)
 
-var refreshPost = schedule.scheduleJob("* * * * *", () => {
+var refreshPost = schedule.scheduleJob("0 0 * * *", () => {
     thread = cleanPost(thread);
 })
 
@@ -77,12 +79,14 @@ function cleanPost(thread) {
 app.listen(port, () => console.log(`server started on ${port}`))
 
 app.post("/api/upload", upload.single("image"), (req, res) => {
-    console.log(req.body, "HERE")
-    thread.image = req.file.path;
-    thread.title = req.body.title;
-    thread.content = req.body.content;
-    console.log("Upload!!", thread)
-    res.send("Success");
+    console.log(req.body, "HERE");
+    if (req.file !== undefined) {
+        thread.image = req.file.path;
+        thread.title = req.body.title;
+        thread.content = req.body.content;
+        console.log("Upload!!", thread)
+        res.send("Success");   
+    }
 });
 
 app.get("/api/thread", (req, res) => {
@@ -91,7 +95,7 @@ app.get("/api/thread", (req, res) => {
         console.log("HERE??>???")
         res.status(200).json({"message": "It's your lucky day"});
     } else {
-        console.log("Heres your thread you filthy animal")
+        console.log("Heres your thread you filthy animal", thread)
         res.send(thread);
     }
 });

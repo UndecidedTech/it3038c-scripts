@@ -14,12 +14,10 @@
             <textarea v-model="content" class="col-5" type="text" rows="8" id="uploadContent"/>    
           </div>
           <div class="row justify-content-center">
-            <div class="col-4"/>
             <form enctype="multipart/form-data">
-              <input class="col-2" @change="onFileSelected" type="file" id="uploadImage"/>
-              <button class="col-2" type="submit" @click="onUpload">Submit</button>
+              <input class="" @change="onFileSelected" type="file" id="uploadImage"/>
+              <button class="ml-auto" type="submit" @click="onUpload">Submit</button>
             </form>
-            <div class="col-4"/>
           </div>
       </div>
   </div>
@@ -61,11 +59,13 @@ export default {
        },
        async getThread() {
          await axios.get("http://localhost:3000/api/thread").then(res => {
-           console.log(res);
+           if (res.data.image !== undefined) {
+              this.disableButton();
+           }
          })
        }
   },
-  mounted(){
+  mounted() {
     this.getThread();
   }
 }

@@ -1,16 +1,18 @@
 <template>
   <div id="app">
     <originalPost/>
+    <thread/>
   </div>
 </template>
 
 <script>
 import originalPost from './components/originalPost.vue'
-
+import thread from './components/thread.vue'
 export default {
   name: 'App',
   components: {
-    originalPost
+    originalPost,
+    thread
   }
 }
 </script>
