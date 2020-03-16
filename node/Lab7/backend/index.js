@@ -45,7 +45,7 @@ var thread = JSON.parse(post);
 
 console.log(thread)
 
-var refreshPost = schedule.scheduleJob("0 0 * * *", () => {
+var refreshPost = schedule.scheduleJob("*/5 * * * *", () => {
     thread = cleanPost(thread);
 })
 
