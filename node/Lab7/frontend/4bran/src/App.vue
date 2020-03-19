@@ -23,6 +23,9 @@ export default {
   font-family: arial,helvetica,sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100vh;
+}
+
+html {
+  background-color: #eef2ff;
 }
 </style>

@@ -67,7 +67,7 @@ function deleteImage(){
 
 function cleanPost(thread) {
     console.log("New Thread :)")
-    // deleteImage();
+    deleteImage();
     thread.image = "";
     thread.title = "";
     thread.content = "";

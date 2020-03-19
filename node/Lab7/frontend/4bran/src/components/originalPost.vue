@@ -51,6 +51,7 @@ export default {
         await axios.post("http://localhost:3000/api/upload", fd)
           .then(res => {
             console.log(res)
+            location.reload();
           })
        },
        disableButton(){
