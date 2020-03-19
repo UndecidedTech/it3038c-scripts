@@ -5,7 +5,7 @@
             <img v-bind:src="`http://localhost:3000/${thread.image}`">
             <h1>{{ thread.content }}</h1>
         </div>
-        <div v-else >
+        <div v-else>
         </div>
       </div>
       
