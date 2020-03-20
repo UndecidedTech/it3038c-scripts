@@ -8,6 +8,8 @@ const cors = require("cors");
 const app = express();
 const port = 3000;
 
+var postNumber = 0;
+
 app.use(cors({
     "origin": ["http://localhost:8080"],
     "credentials": true,
@@ -19,7 +21,7 @@ app.use(bodyParser.json());
 app.use("/image", express.static("image"));
 
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png"){
+    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png" || file.mimetype === "video/webm"){
         cb(null, true)
     } else {
         cb(null, false)
@@ -56,7 +58,7 @@ function deleteImage(){
         }
 
         files.forEach((file) => {
-            if (file.endsWith(".jpg")){
+            if (file.endsWith(".jpg" || ".webm")){
                 console.log("deleting image: ", file)
                 fs.unlinkSync(`./image/${file}`);
             }
@@ -65,13 +67,27 @@ function deleteImage(){
     })
 }
 
+function padPostNumber() {
+    // increment post counter
+    postNumber += 1;
+    
+    let padAmount = 8 - post.postNumber.length;
+    console.log("padding: ", postNumber, padAmount);
+    let paddedPost = postNumber.toString();
+    paddedPost = paddedPost.padStart(padAmount, "0")
+    return paddedPost;
+}
+
 function cleanPost(thread) {
     console.log("New Thread :)")
     deleteImage();
+    thread.number = undefined;
     thread.image = "";
     thread.title = "";
     thread.content = "";
     thread.replies = [];
+
+    // TODO delete the content of post.json
 
     return thread;
 }
@@ -84,6 +100,13 @@ app.post("/api/upload", upload.single("image"), (req, res) => {
         thread.image = req.file.path;
         thread.title = req.body.title;
         thread.content = req.body.content;
+        thread.postNumber = padPostNumber();
+        // write thread object to our JSON file so we can keep concurrency
+        console.log("Thread????: " , JSON.stringify(thread));
+        let data = JSON.stringify(thread);
+        fs.writeFile("post.json", data, (cb) => {
+            console.log(cb);
+        });
         console.log("Upload!!", thread)
         res.send("Success");   
     }

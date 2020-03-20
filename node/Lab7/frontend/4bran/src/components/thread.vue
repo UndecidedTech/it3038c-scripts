@@ -98,6 +98,10 @@ export default {
                 this.expanded = false;
             }
         }
+
+        // <video src="chrome.webm" type="video/webm">
+        //    <p>Your browser does not support the video element.</p>
+        // </video>
     },
     created() {
         this.getThread();
