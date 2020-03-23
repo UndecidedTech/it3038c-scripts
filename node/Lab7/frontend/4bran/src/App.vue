@@ -2,17 +2,20 @@
   <div id="app">
     <originalPost/>
     <thread/>
+    <reply-box/>
   </div>
 </template>
 
 <script>
 import originalPost from './components/originalPost.vue'
 import thread from './components/thread.vue'
+import replyBox from './components/replyBox.vue'
 export default {
   name: 'App',
   components: {
     originalPost,
-    thread
+    thread,
+    replyBox
   }
 }
 </script>

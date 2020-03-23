@@ -10,6 +10,10 @@ const port = 3000;
 
 var postNumber = 0;
 
+
+// {"postNumber":"0","image":"","title":"","content":"","replies":[]}
+
+
 app.use(cors({
     "origin": ["http://localhost:8080"],
     "credentials": true,
@@ -58,8 +62,11 @@ function deleteImage(){
         }
 
         files.forEach((file) => {
-            if (file.endsWith(".jpg" || ".webm")){
+            if (file.endsWith(".jpg")) {
                 console.log("deleting image: ", file)
+                fs.unlinkSync(`./image/${file}`);
+            } else if (file.endsWith(".webm")) {
+                console.log("deleting webm: ", file)
                 fs.unlinkSync(`./image/${file}`);
             }
                 
@@ -88,6 +95,10 @@ function cleanPost(thread) {
     thread.replies = [];
 
     // TODO delete the content of post.json
+    // let stringThread = JSON.stringify(thread);
+    // fs.writeFile("post.json", thread, (cb) => {
+    //     console.log(cb);
+    // })
 
     return thread;
 }
@@ -102,11 +113,11 @@ app.post("/api/upload", upload.single("image"), (req, res) => {
         thread.content = req.body.content;
         thread.postNumber = padPostNumber();
         // write thread object to our JSON file so we can keep concurrency
-        console.log("Thread????: " , JSON.stringify(thread));
-        let data = JSON.stringify(thread);
-        fs.writeFile("post.json", data, (cb) => {
-            console.log(cb);
-        });
+        // console.log("Thread????: " , JSON.stringify(thread));
+        // let data = JSON.stringify(thread);
+        // fs.writeFile("post.json", data, (cb) => {
+        //     console.log(cb);
+        // });
         console.log("Upload!!", thread)
         res.send("Success");   
     }
@@ -122,5 +133,28 @@ app.get("/api/thread", (req, res) => {
         res.send(thread);
     }
 });
+
+app.get("api/reply", upload.single("image"), (req, res) => {
+    console.log("Bran Reply Trigger");
+
+    if (req.file !== undefined) {
+        let reply = {};
+
+        reply.image = req.file.path;
+        reply.comment = req.body.comment;
+        reply.postNumber = padPostNumber();
+        // write thread object to our JSON file so we can keep concurrency
+        // console.log("Thread????: " , JSON.stringify(thread));
+        // let data = JSON.stringify(thread);
+        // fs.writeFile("post.json", data, (cb) => {
+        //     console.log(cb);
+        // });
+
+        thread.replies.push(reply);
+
+        console.log("Replied!! (You)", thread)
+        res.send("Success");   
+    }
+})
 
 

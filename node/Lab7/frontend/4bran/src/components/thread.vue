@@ -14,7 +14,8 @@
                 
             </div>
             <div class="imageContainer">
-                <img v-bind:width="image.width" v-bind:height="image.height" v-bind:src="thread.image" @click="expandImage">
+                <img v-if="!webm" v-bind:width="image.width" v-bind:height="image.height" v-bind:src="thread.image" @click="expandImage"/>
+                <video v-else v-bind:width="image.width" v-bind:height="image.height" v-bind:src="thread.image"/>
             </div>
             <div class="threadContent">
                 {{thread.content}}
@@ -42,7 +43,8 @@ export default {
             "expanded": false,
             "image": undefined,
             "isFetching": true,
-            "thread": {}
+            "thread": {},
+            "webm": false,
         }
     },
     methods: {
@@ -83,8 +85,11 @@ export default {
               this.thread.title = res.data.title;
               this.thread.replies = res.data.replies;
               this.thread.content = res.data.content;
+            
+            //   if (this.image.endsWith(".webm"))
+            //     this.webm = true;
 
-              this.image = this.getImageSize()
+              this.image = this.getImageSize();
          })
         },
         expandImage() {
@@ -97,6 +102,10 @@ export default {
                 this.image.width = this.image.pWidth;
                 this.expanded = false;
             }
+        },
+        getImageType(image) {
+            console.log("Here With the Image bud");
+            return true;
         }
 
         // <video src="chrome.webm" type="video/webm">
