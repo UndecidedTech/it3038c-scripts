@@ -6,8 +6,8 @@ const uniqid = require("uniqid")
 
 //resize
 //rotate
-
-
+//output
+//blur
 //console.log(process.argv)
 
 const argv = yargs
@@ -36,6 +36,11 @@ const argv = yargs
             description: "Degrees to rotate by",
             alias: "r",
             type: "number"
+        },
+        blur: {
+            description: "Blur an image (true or leave out)",
+            alias: "b",
+            type: "boolean"
         }
     })
     .argv;
@@ -51,26 +56,42 @@ const argv = yargs
 // }
 
 if (argv._.includes("imgmodify")) {
-    const filename = argv.image.split("/").pop();
-    const extension = argv.type || filename.split(".").pop();
+    const file = argv.image.split("/").pop();
+    const filename = file.split(".")[0];
+    const extension = argv.type || file.split(".").pop();
 
-    console.log("File Stuff: ", filename, extension);
+    console.log("File Stuff: ", file, extension);
     console.log("entered here", argv);
 
+    var sharpImage = sharp(argv.image);
 
 
     if (typeof(argv.width) !== "undefined" && typeof(argv.height) !== "undefined") {
         console.log("checks passed");
         
-        if (typeof (argv.rotate) !== "undefined") {
-            sharp(argv.image).resize(argv.width, argv.height).rotate(argv.rotate).toFile(uniqid(filename, `.${extension}`));
-        } else {
-            sharp(argv.image).resize(argv.width, argv.height).toFile(uniqid(filename, `.${extension}`));
-        }
-        
-    } else if (typeof(argv.rotate) !== "undefined" && typeof(argv.width) === "undefined" && typeof(argv.height) === "undefined" ) {
-        sharp(argv.image).rotate(argv.rotate).toFile(uniqid(filename, `.${extension}`))
+        sharpImage = sharpImage.resize(argv.width, argv.height);
     }
+
+
+    if (typeof (argv.rotate) !== "undefined") {
+        sharpImage = sharpImage.resize(argv.width, argv.height).rotate(argv.rotate);
+    }
+        
+    if (typeof(argv.rotate) !== "undefined" && typeof(argv.width) === "undefined" && typeof(argv.height) === "undefined" ) {
+        sharpImage = sharpImage.rotate(argv.rotate);
+    }
+
+    if (typeof(argv.blur) !== "undefined") {
+        sharpImage = sharpImage.blur();
+    }
+
+    if (typeof(argv.type) !== "undefined") {
+        sharpImage = sharpImage.toFile(uniqid(filename, `.${argv.type}`));
+    } else {
+        sharpImage = sharpImage.toFile(uniqid(filename, `.${extension}`));
+    }
+
+
 
 }
 
