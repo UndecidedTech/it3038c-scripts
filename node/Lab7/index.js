@@ -1,6 +1,5 @@
 const sharp = require("sharp");
 const yargs = require("yargs");
-const sizeOf = require("image-size");
 const uniqid = require("uniqid")
 //use 4 sharp methods
 
@@ -8,7 +7,6 @@ const uniqid = require("uniqid")
 //rotate
 //output
 //blur
-//console.log(process.argv)
 
 const argv = yargs
     .command("imgmodify", "Provide an image file", {
