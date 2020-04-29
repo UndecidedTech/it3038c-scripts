@@ -18,7 +18,7 @@ Then navigate to localhost:8080, or whatever port Vue hosts on by default
 
 Inside second terminal: 
 ```bash
-cd it3038c-scripts/node/4bran-clone/frontend/4bran
+cd it3038c-scripts/node/4bran-clone/backend/4bran
 npm install
 npm run dev
 ```
