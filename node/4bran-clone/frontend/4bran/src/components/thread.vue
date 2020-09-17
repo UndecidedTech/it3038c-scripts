@@ -6,7 +6,7 @@
                 <div class="threadTitle subject">
                     {{thread.title}}
                 </div>    
-                <div class="threadTitle">File: <a v-bind:href="thread.image">Image URL ({{ image.nWidth }}x{{image.nHeight}})</a>
+                <div class="threadTitle">File: <a v-bind:href="thread.image.path">Image URL ({{ thread.image.size.nWidth }}x{{thread.image.size.nHeight}})</a>
                 <div class="threadTitle anonymous">
                     Anonymous
                 </div>
@@ -16,24 +16,15 @@
             </div>
             </div>
             <div class="imageContainer">
-                <img v-if="!webm" v-bind:width="image.width" v-bind:height="image.height" v-bind:src="thread.image" @click="expandImage"/>
-                <video v-else v-bind:width="image.width" v-bind:height="image.height" v-bind:src="thread.image"/>
+                <imageComponent v-bind:image="thread.image"/>
+                <!-- <video v-else v-bind:width="image.width" v-bind:height="image.height" v-bind:src="thread.image"/> -->
             </div>
             <div class="threadContent postMessage">
                 {{thread.content}}
             </div>
             <div class="threadReplies">
                 <div  v-for="(reply, index) in thread.replies" :key="index" class="threadReply oldOpContainer">
-                    <div class="sideArrows">>></div>
-                    <img v-if="reply.image !== undefined" v-bind:src="`http://localhost:3000/${reply.image}`"/>
-                    <div v-if="reply.image !== undefined">File: {{}} </div>
-                    <div class="threadTitle anonymous">
-                        Anonymous
-                    </div>
-                    <div class="threadTitle postNumber ml-2">{{ reply.postNumber }}</div>
-                    <div class="postMessage">
-                    {{ reply.comment }}
-                    </div>
+                    <replyComponent :replyData="reply"/>
                 </div>
             </div>
           </div>
@@ -47,11 +38,12 @@
 <script>
 import axios from "axios";
 import { EventBus } from "../event-bus";
+import imageComponent from "../components/imageComponent";
+import replyComponent from "../components/reply";
 export default {
     name: "thread",
     data() {
         return {
-            "expanded": false,
             "image": undefined,
             "isFetching": true,
             "thread": {},
@@ -59,62 +51,26 @@ export default {
         }
     },
     methods: {
-        getImageSize() {
-            let img = new Image();
-
-            img.src = this.thread.image;
-            
-            var returnValue = {
-                "nWidth": img.width,
-                "nHeight": img.height
-            };
-
-            if (img.width > img.height) {
-                let pWidth = 250;
-                let percentChange = ((pWidth - img.width) / Math.abs(img.width));
-                
-                returnValue.pWidth = pWidth;
-                returnValue.pHeight = img.height - Math.abs(img.height * percentChange);
-                
-                returnValue.width = 250;
-                returnValue.height = returnValue.pHeight;
-            } else {
-                let pHeight = 250;
-                let percentChange = (pHeight - img.height) / Math.abs(img.height);
-
-                returnValue.pHeight = 250;
-                returnValue.pWidth = img.width - Math.abs(img.width * percentChange);
-                returnValue.height = 250;
-                returnValue.width = returnValue.pWidth;
-            }
-            return returnValue
-        },
         async getThread() {
          await axios.get("http://localhost:3000/api/thread").then(res => {
               this.isFetching = false;
-              this.thread.image = `http://localhost:3000/${res.data.image}`;
+              this.thread.image = res.data.image;
+              this.thread.image.path = `http://localhost:3000/${res.data.image.path}`;
               this.thread.title = res.data.title;
               this.thread.replies = res.data.replies;
               this.thread.content = res.data.content;
               this.thread.postNumber = this.padPostNumber(res.data.postNumber);
               
+              this.thread.replies.forEach(reply => {
+                  if (reply.image)
+                    reply.image.path = `http://localhost:3000/${reply.image.path}`;
+              });
               console.log("getThread", res.data.postNumber)
             //   if (this.image.endsWith(".webm"))
             //     this.webm = true;
 
-              this.image = this.getImageSize();
+            //   this.image = this.getImageSize();
          })
-        },
-        expandImage() {
-            if (!this.expanded) {
-                this.image.height = this.image.nHeight;
-                this.image.width = this.image.nWidth;
-                this.expanded = true;
-            } else {
-                this.image.height = this.image.pHeight;
-                this.image.width = this.image.pWidth;
-                this.expanded = false;
-            }
         },
         getImageType(image) {
             console.log("Here With the Image bud");
@@ -137,6 +93,10 @@ export default {
     },
     created() {
         this.getThread();
+    },
+    components: {
+        imageComponent,
+        replyComponent
     }
 
 }
@@ -154,15 +114,7 @@ export default {
     display: block;
     overflow: hidden;
 }
-.oldopContainer  {
-    margin-top: 5%;
-    padding: 5px;
-    display: block;
-    overflow: hidden;
-    background-color: #d6daf0;
-    border: 1px solid #b7c5d9!important;
-    min-width: 80vw;
-}
+
 .threadContent {
     font-size: 12pt;
     text-align:start;
@@ -186,15 +138,7 @@ export default {
     display: inline-block;
 }
 
-.threadReply {
-    background-color: #d6daf0;
-    border: 1px solid #b7c5d9;
-    border-left: none;
-    border-top: none;
-    display: table;
-    padding: 2px;
-    margin: 4px;
-}
+
 
 .post {
     margin: 4px 0;
@@ -229,11 +173,5 @@ export default {
     color: #0f0c5d;
     font-weight: 700;
 }
-.sideArrows {
-    color: #b7c5d9;
-    float: left;
-    margin-right: 2px;
-    margin-top: 0;
-    margin-left: 2px;
-}
+
 </style>

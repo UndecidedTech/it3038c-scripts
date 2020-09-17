@@ -8,7 +8,7 @@ stringArray = []
 for p in data:
     sentence = "{0} is color: {1}".format(p["name"], p["color"])
     stringArray.append(sentence)
-    print("{0} is color: {1}".format(p["name"], p["color"]))
+    print(sentence)
 
 
 print(stringArray)

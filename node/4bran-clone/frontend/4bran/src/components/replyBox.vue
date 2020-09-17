@@ -1,7 +1,7 @@
 <template>
   <div v-if="open" id="quickReply" class="extPanel reply d-none">
       <div id="qrHeader" class="drag postblock">Reply to Thread No.<span id="qrTid"></span><img alt="X"
-              src="//s.4cdn.org/image/buttons/burichan/cross.png" id="qrClose" class="extButton" @click="makeVisible()" title="Close Window">
+              src="https://s.4cdn.org/image/buttons/burichan/cross.png" id="qrClose" class="extButton" @click="makeVisible()" title="Close Window">
       </div>
           <div id="qrForm">
               <div><textarea v-model="comment" name="com" cols="48" rows="4" wrap="soft" tabindex="0" placeholder="Comment"></textarea>
@@ -94,5 +94,9 @@ export default {
     display: table;
     padding: 2px;
     position: static;
+}
+
+.extButton {
+    cursor: pointer;
 }
 </style>

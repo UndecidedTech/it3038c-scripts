@@ -4,6 +4,7 @@ const schedule = require("node-schedule");
 const multer = require("multer");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const sizeOf = require("image-size");
 
 const app = express();
 const port = 3000;
@@ -93,7 +94,39 @@ app.listen(port, () => console.log(`server started on ${port}`))
 app.post("/api/upload", upload.single("image"), async (req, res) => {
     console.log(req.body, "HERE");
     if (req.file !== undefined) {
-        thread.image = req.file.path;
+        let img = sizeOf(req.file.path);
+        let returnValue = {
+            "nWidth": img.width,
+            "nHeight": img.height
+        };
+
+        if (img.width > img.height) {
+            let pWidth = 250;
+            let percentChange = ((pWidth - img.width) / Math.abs(img.width));
+               
+            returnValue.pWidth = pWidth;
+            returnValue.pHeight = img.height - Math.abs(img.height * percentChange);
+                
+            returnValue.width = 250;
+            returnValue.height = returnValue.pHeight;
+        } else {
+            let pHeight = 250;
+            let percentChange = (pHeight - img.height) / Math.abs(img.height);
+
+            returnValue.pHeight = 250;
+            returnValue.pWidth = img.width - Math.abs(img.width * percentChange);
+            returnValue.height = 250;
+            returnValue.width = returnValue.pWidth;
+        }
+
+        thread.image = {
+            "path": req.file.path,
+            "size": returnValue,
+            "kbSize": Math.ceil(req.file.size / 1000),
+            "expanded": false
+        }; 
+
+        // thread.image = req.file.path;
         thread.title = req.body.title;
         thread.content = req.body.content;
         thread.postNumber++;
@@ -104,7 +137,7 @@ app.post("/api/upload", upload.single("image"), async (req, res) => {
         //     console.log(cb);
         // });
         console.log("Upload!!", thread)
-        res.send("Success");   
+        res.status(200).send("Success");   
     }
 });
 
@@ -120,12 +153,40 @@ app.get("/api/thread", (req, res) => {
 });
 
 app.post("/api/reply", upload.single("image"), (req, res) => {
-    console.log("Bran Reply Trigger");
 
     if (req.file !== undefined) {
         let reply = {};
+        let img = sizeOf(req.file.path);
+        let returnValue = {
+            "nWidth": img.width,
+            "nHeight": img.height
+        };
 
-        reply.image = req.file.path;
+        if (img.width > img.height) {
+            let pWidth = 250;
+            let percentChange = ((pWidth - img.width) / Math.abs(img.width));
+               
+            returnValue.pWidth = pWidth;
+            returnValue.pHeight = img.height - Math.abs(img.height * percentChange);
+                
+            returnValue.width = 250;
+            returnValue.height = returnValue.pHeight;
+        } else {
+            let pHeight = 250;
+            let percentChange = (pHeight - img.height) / Math.abs(img.height);
+
+            returnValue.pHeight = 250;
+            returnValue.pWidth = img.width - Math.abs(img.width * percentChange);
+            returnValue.height = 250;
+            returnValue.width = returnValue.pWidth;
+        }
+
+        reply.image = {
+            "path": req.file.path,
+            "size": returnValue,
+            "kbSize": Math.ceil(req.file.size / 1000),
+            "expanded": false
+        };  
         reply.comment = req.body.comment;
         reply.postNumber = thread.postNumber++;
         // write thread object to our JSON file so we can keep concurrency
@@ -138,7 +199,7 @@ app.post("/api/reply", upload.single("image"), (req, res) => {
         thread.replies.push(reply);
 
         console.log("Replied!! (You)", thread)
-        res.send("Success", thread);   
+        res.status(200).send("Success", thread);   
     } else if (req.file === undefined) {
         let reply = {};
         reply.image = undefined;
