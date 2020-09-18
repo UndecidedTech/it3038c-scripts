@@ -101,11 +101,6 @@ export default {
 </script>
 
 <style>
-.content {
-    margin-right: 12%;
-    margin-left: 12%;
-}
-
 .opContainer  {
     padding: 5px;
     display: inline;

@@ -23,7 +23,7 @@ export default {
 <style>
 #app {
   background-color: #eef2ff;
-  font-family: arial,helvetica,sans-serif;
+  font-family: arial, helvetica, sans-serif; font-size: 10pt;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

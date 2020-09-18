@@ -74,7 +74,8 @@ function deleteImage(){
 function cleanPost(thread) {
     console.log("New Thread :)")
     deleteImage();
-    thread.postNumber = 0;
+    thread.postNumber = 1;
+    thread.postCount = 0;
     thread.image = "";
     thread.title = "";
     thread.content = "";
@@ -125,11 +126,8 @@ app.post("/api/upload", upload.single("image"), async (req, res) => {
             "kbSize": Math.ceil(req.file.size / 1000),
             "expanded": false
         }; 
-
-        // thread.image = req.file.path;
         thread.title = req.body.title;
         thread.content = req.body.content;
-        thread.postNumber++;
         // write thread object to our JSON file so we can keep concurrency
         // console.log("Thread????: " , JSON.stringify(thread));
         // let data = JSON.stringify(thread);
@@ -188,7 +186,8 @@ app.post("/api/reply", upload.single("image"), (req, res) => {
             "expanded": false
         };  
         reply.comment = req.body.comment;
-        reply.postNumber = thread.postNumber++;
+        thread.postCount++;
+        reply.postNumber = thread.postNumber + thread.postCount;
         // write thread object to our JSON file so we can keep concurrency
         // console.log("Thread????: " , JSON.stringify(thread));
         // let data = JSON.stringify(thread);
@@ -204,7 +203,8 @@ app.post("/api/reply", upload.single("image"), (req, res) => {
         let reply = {};
         reply.image = undefined;
         reply.comment = req.body.comment;
-        reply.postNumber = thread.postNumber + 1;
+        thread.postCount++;
+        reply.postNumber = thread.postNumber + thread.postCount;
 
         thread.replies.push(reply);
 
