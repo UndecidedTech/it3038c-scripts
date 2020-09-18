@@ -65,6 +65,14 @@ export default {
 </script>
 
 <style>
+.replyTarget {
+    background: #d6bad0!important;
+    border: 1px solid #ba9dbf!important;
+    border-left: none!important;
+    border-top: none!important;
+    padding: 2px;
+}
+
 .quoteLink {
     background: none!important;
     border: none;
