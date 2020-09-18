@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-      <div class="row">
+      <div>
           <div v-if="!isFetching && thread.content !== undefined" class="opContainer">
             <div class="titleContainer">
                 <div class="threadTitle subject">
@@ -22,12 +22,10 @@
             <div class="threadContent postMessage">
                 {{thread.content}}
             </div>
-            <div class="threadReplies">
-                <div  v-for="(reply, index) in thread.replies" :key="index" class="threadReply oldOpContainer">
-                    <replyComponent :replyData="reply"/>
-                </div>
+            <div  v-for="(reply, index) in thread.replies" :key="index" class="threadReplies">
+                <replyComponent :replyData="reply"/>
             </div>
-          </div>
+            </div>
           <div v-else>
           </div>
       </div>
@@ -109,11 +107,16 @@ export default {
 }
 
 .opContainer  {
-    margin-top: 5%;
     padding: 5px;
-    display: block;
+    display: inline;
     overflow: hidden;
 }
+
+.post {
+    margin: 4px 0;
+    overflow: hidden;
+}
+
 
 .threadContent {
     font-size: 12pt;
@@ -127,6 +130,10 @@ export default {
 }
 .imageContainer {
     float: left;
+    display: block;
+    margin-left: 20px;
+    margin-right: 20px;
+
 }
 .titleContainer {
     display: block;
@@ -137,8 +144,6 @@ export default {
     text-align: start;
     display: inline-block;
 }
-
-
 
 .post {
     margin: 4px 0;

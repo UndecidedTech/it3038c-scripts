@@ -1,15 +1,19 @@
 <template>
     <div>
-        <div class="sideArrows">>></div>
-        <imageComponent v-if="replyData.image" :image="replyData.image"/>
-        <!-- <img v-if="reply.image !== undefined" v-bind:src="`http://localhost:3000/${reply.image.path}`"/> -->
-        <div v-if="replyData.image !== undefined">File: <a :href="replyData.image.path">Image URL ({{ replyData.image.size.nWidth }}x{{replyData.image.size.nHeight}})</a> </div>
-        <div class="threadTitle anonymous">
-            Anonymous
-        </div>
-        <div class="threadTitle postNumber ml-2">{{ padPostNumber(replyData.postNumber) }}</div>
-        <div class="postMessage">
-            {{ replyData.comment }}
+      <div class="sideArrows">>></div>
+        <div class="reply post">
+            <div class="postInfo">
+                <span class="anonymous">
+                    Anonymous
+                </span>
+                <span v-if="replyData.image !== undefined">File: <a :href="replyData.image.path">Image URL ({{ replyData.image.size.nWidth }}x{{replyData.image.size.nHeight}})</a> </span>
+                <span class="postNumber ml-2">No.{{ padPostNumber(replyData.postNumber) }}</span>
+            </div>
+            <!-- <img v-if="reply.image !== undefined" v-bind:src="`http://localhost:3000/${reply.image.path}`"/> -->
+            <div class="postMessage">
+                <imageComponent v-if="replyData.image" :image="replyData.image" class="imageMessage"/>
+                {{ replyData.comment }}
+            </div>
         </div>
     </div>
 </template>
@@ -35,6 +39,34 @@ export default {
 </script>
 
 <style>
+.postInfo {
+    text-align: start;
+    display: block;
+}
+.reply {
+    display:table;
+    border: 1px solid #b7c5d9;
+    border-left: none;
+    border-top: none;
+    display: table;
+    padding: 2px;
+}
+
+.post {
+    margin: 4px 0;
+    overflow: hidden;
+}
+
+.imageMessage {
+    display: block;
+    float: left;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 3px;
+    margin-bottom: 5px;
+
+
+}
 .postMessage {
     display: block;
     margin-block-start: 1em;
@@ -65,15 +97,6 @@ export default {
     display: inline-block;
 }
 
-.threadReply {
-    background-color: #d6daf0;
-    border: 1px solid #b7c5d9;
-    border-left: none;
-    border-top: none;
-    display: table;
-    padding: 2px;
-    margin: 4px;
-}
 
 .oldopContainer  {
     margin-top: 5%;
